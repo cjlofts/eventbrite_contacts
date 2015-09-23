@@ -1,7 +1,5 @@
 require 'eventbrite_contacts/version'
 require 'httparty'
-require 'curb'
-require 'net/http'
 
 module EventbriteContacts
   class Client
@@ -12,13 +10,32 @@ module EventbriteContacts
     @auth_token = auth_token
   end
 
-  def get_contacts(user_id, list_id)
-    url = "#{BASE_URL}/users/#{user_id}/contact_lists/#{list_id}/contacts"
+  def get_lists(user_id, options={})
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/?"
+    page = if options[:page].nil? then 1 else options[:page] end
+    encoded = URI.encode("#{url}page=#{page}")
+    make_request(encoded, "get")
+  end
+
+  def get_list(user_id, list_id)
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/#{list_id}"
+    encoded = URI.encode(url)
+    make_request(encoded, "get")
+  end
+
+  def add_list(user_id, list_name)
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/?"
+    encoded = URI.encode("#{url}contact_list.name=#{list_name}")
+    make_request(encoded, "post")
+  end
+
+  def get_all_contacts(user_id, list_id)
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/#{list_id}/contacts"
     page = 1
     contacts = []
     loop do
       encoded = URI.encode("#{url}?page=#{page}")
-      response = HTTParty.get(encoded, :headers => { "Authorization" => "Bearer #{@auth_token}" })
+      response = make_request(encoded, "get")
       contacts << response["contacts"] unless response["contacts"].nil?
       page += 1
       break if response["error"] == "BAD_PAGE"
@@ -26,11 +43,38 @@ module EventbriteContacts
     contacts.flatten
   end
 
-  # def create_contact(user_id, list_id)
-  #   url = "#{BASE_URL}/users/#{user_id}/contact_lists/#{list_id}/contacts"
-  #   encoded = URI.encode(url)
-  #   binding.pry
-  # end
+  def get_contacts(user_id, list_id, options={})
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/#{list_id}/contacts?"
+    page = if options[:page].nil? then 1 else options[:page] end
+    encoded = URI.encode("#{url}page=#{page}")
+    make_request(encoded, "get")
+  end
+
+  def add_contact(user_id, list_id, contact)
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/#{list_id}/contacts/?"
+    param_url = "contact.email=#{contact[:email]}&contact.first_name=#{contact[:first_name]}&contact.last_name=#{contact[:last_name]}"
+    encoded = URI.encode("#{url}#{param_url}")
+    make_request(encoded, "post")
+  end
+
+  def delete_contact(user_id, list_id, contact_email)
+    url = "#{BASE_URL}users/#{user_id}/contact_lists/#{list_id}/contacts/?"
+    encoded = URI.encode("#{url}email=#{contact_email}")
+    make_request(encoded, "delete")
+  end
+
+  private
+
+  def make_request(url, verb)
+    case verb
+    when "get"
+      HTTParty.get(url, :headers => { "Authorization" => "Bearer #{@auth_token}" })
+    when "post"
+      HTTParty.post(url, :headers => { "Authorization" => "Bearer #{@auth_token}" })
+    when "delete"
+      HTTParty.delete(url, :headers => { "Authorization" => "Bearer #{@auth_token}" })
+    end
+  end
 
   end
 end
