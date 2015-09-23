@@ -5,13 +5,13 @@ require 'eventbrite_contacts/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "eventbrite_contacts"
-  spec.version       = EventbriteContacts::VERSION
+  spec.version       = EventbriteContacts::Client::VERSION
   spec.authors       = ["Ciaran Lofts"]
   spec.email         = ["cjlofts@sky.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Interact with the Eventbrite API to create Contact Lists and retrieve, create and delete Contacts}
+  spec.homepage      = "github.com/cjlofts/eventbrite_contacts"
+  spec.licence       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
