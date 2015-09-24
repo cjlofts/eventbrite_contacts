@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Interact with the Eventbrite API to create Contact Lists and retrieve, create and delete Contacts}
   spec.homepage      = "github.com/cjlofts/eventbrite_contacts"
+  spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
