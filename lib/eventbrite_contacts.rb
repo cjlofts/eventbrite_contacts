@@ -30,6 +30,12 @@ module EventbriteContacts
     make_request(encoded, "post")
   end
 
+  def delete_list(list_id)
+    url = "#{BASE_URL}users/#{@user_id}/contact_lists/#{list_id}"
+    encoded = URI.encode(url)
+    make_request(encoded, "delete")
+  end
+
   def get_all_contacts(list_id)
     url = "#{BASE_URL}users/#{@user_id}/contact_lists/#{list_id}/contacts"
     page = 1
