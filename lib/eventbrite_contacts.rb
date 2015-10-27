@@ -79,6 +79,50 @@ module EventbriteContacts
     raise_limit_error(response)
   end
 
+  def get_organizers(user_id, options = {})
+    url = "#{BASE_URL}users/#{user_id}/organizers/?"
+    page = options[:page].nil? ? 1 : options[:page]
+    encoded = URI.encode("#{url}page=#{page}")
+    response = make_request(encoded, 'get')
+    raise_limit_error(response)
+  end
+
+  def get_events(organizer_id, options = {})
+    url = "#{BASE_URL}events/search?"
+    page = options[:page].nil? ? 1 : options[:page]
+    encoded = URI.encode("#{url}organizer.id=#{organizer_id}&page=#{page}")
+    response = make_request(encoded, 'get')
+    raise_limit_error(response)
+  end
+
+  def get_webhooks
+    url = "#{BASE_URL}webhooks/"
+    encoded = URI.encode("#{url}")
+    response = make_request(encoded, 'get')
+    raise_limit_error(response)
+  end
+
+  def add_webhook(event_id, endpoint_url)
+    url = "#{BASE_URL}webhooks/?"
+    encoded = URI.encode("#{url}endpoint_url=#{endpoint_url}&event_id=#{event_id}&actions=order.placed")
+    response = make_request(encoded, 'post')
+    raise_limit_error(response)
+  end
+
+  def delete_webhook(webhook_id)
+    url = "#{BASE_URL}webhooks/#{webhook_id}"
+    encoded = URI.encode("#{url}")
+    response = make_request(encoded, 'delete')
+    raise_limit_error(response)
+  end
+
+  def get_order(order_id)
+    url = "#{BASE_URL}orders/#{order_id}"
+    encoded = URI.encode("#{url}")
+    response = make_request(encoded, 'get')
+    raise_limit_error(response)
+  end
+
   private
 
   def make_request(url, verb)
