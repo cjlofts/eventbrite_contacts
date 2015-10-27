@@ -95,9 +95,10 @@ module EventbriteContacts
     raise_limit_error(response)
   end
 
-  def get_webhooks
-    url = "#{BASE_URL}webhooks/"
-    encoded = URI.encode("#{url}")
+  def get_webhooks(options = {})
+    url = "#{BASE_URL}webhooks/?"
+    page = options[:page].nil? ? 1 : options[:page]
+    encoded = URI.encode("#{url}page=#{page}")
     response = make_request(encoded, 'get')
     raise_limit_error(response)
   end
